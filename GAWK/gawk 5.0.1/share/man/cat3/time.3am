@@ -1,0 +1,65 @@
+TIME(3am)                  GNU Awk Extension Modules                 TIME(3am)
+
+
+
+NNAAMMEE
+       time - time functions for gawk
+
+SSYYNNOOPPSSIISS
+       @load "time"
+
+       time = gettimeofday()
+       ret = sleep(amount)
+
+DDEESSCCRRIIPPTTIIOONN
+       The _t_i_m_e extension adds two functions named ggeettttiimmeeooffddaayy(()) and sslleeeepp(()),
+       as follows.
+
+       ggeettttiimmeeooffddaayy(())
+              This function returns the number of seconds since the Epoch as a
+              floating-point  value.  It  should have subsecond precision.  It
+              returns -1 upon error and sets EERRRRNNOO to indicate the problem.
+
+       sslleeeepp((_s_e_c_o_n_d_s))
+              This function attempts to sleep for the given amount of seconds,
+              which may include a fractional portion.  If _s_e_c_o_n_d_s is negative,
+              or the attempt to sleep fails, then it returns -1 and  sets  EERR--
+              RRNNOO.  Otherwise, the function should return 0 after sleeping for
+              the indicated amount of time.
+
+EEXXAAMMPPLLEE
+       @load "time"
+       ...
+       printf "It is now %g seconds since the Epoch\n", gettimeofday()
+       printf "Pausing for a while... " ; sleep(2.5) ; print "done"
+
+SSEEEE AALLSSOO
+       _G_A_W_K_:  _E_f_f_e_c_t_i_v_e   _A_W_K   _P_r_o_g_r_a_m_m_i_n_g,   _f_i_l_e_f_u_n_c_s(3am),   _f_n_m_a_t_c_h(3am),
+       _f_o_r_k(3am),   _i_n_p_l_a_c_e(3am),  _o_r_d_c_h_r(3am),  _r_e_a_d_d_i_r(3am),  _r_e_a_d_f_i_l_e(3am),
+       _r_e_v_o_u_t_p_u_t(3am), _r_w_a_r_r_a_y(3am).
+
+       _g_e_t_t_i_m_e_o_f_d_a_y(2), _n_a_n_o_s_l_e_e_p(2), _s_e_l_e_c_t(2).
+
+AAUUTTHHOORR
+       Arnold Robbins, aarrnnoolldd@@sskkeeeevvee..ccoomm.
+
+CCOOPPYYIINNGG PPEERRMMIISSSSIIOONNSS
+       Copyright (C) 2012, 2013, 2018, Free Software Foundation, Inc.
+
+       Permission is granted to make and distribute verbatim  copies  of  this
+       manual  page  provided  the copyright notice and this permission notice
+       are preserved on all copies.
+
+       Permission is granted to copy and distribute modified versions of  this
+       manual  page  under  the conditions for verbatim copying, provided that
+       the entire resulting derived work is distributed under the terms  of  a
+       permission notice identical to this one.
+
+       Permission  is granted to copy and distribute translations of this man-
+       ual page into another language, under the above conditions for modified
+       versions,  except that this permission notice may be stated in a trans-
+       lation approved by the Foundation.
+
+
+
+Free Software Foundation          Feb 02 2018                        TIME(3am)

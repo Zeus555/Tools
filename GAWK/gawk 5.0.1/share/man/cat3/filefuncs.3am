@@ -1,0 +1,245 @@
+FILEFUNCS(3am)             GNU Awk Extension Modules            FILEFUNCS(3am)
+
+
+
+NNAAMMEE
+       filefuncs - provide some file related functionality to gawk
+
+SSYYNNOOPPSSIISS
+       @load "filefuncs"
+
+       result = chdir("/some/directory")
+
+       result = stat("/some/path", statdata [, follow])
+
+       flags = or(FTS_PHYSICAL, ...)
+       result = fts(pathlist, flags, filedata)
+
+DDEESSCCRRIIPPTTIIOONN
+       The  _f_i_l_e_f_u_n_c_s  extension adds several functions that provide access to
+       file-related facilities.
+
+   cchhddiirr(())
+       The cchhddiirr(()) function is a direct hook to the _c_h_d_i_r(2)  system  call  to
+       change  the  current  directory.   It returns zero upon success or less
+       than zero upon error.  In the latter case it updates EERRRRNNOO.
+
+   ssttaatt(())
+       The ssttaatt(()) function provides a hook into the _s_t_a_t(2) system  call.   It
+       returns  zero upon success or less than zero upon error.  In the latter
+       case it updates EERRRRNNOO.  By default,  it  uses  _l_s_t_a_t(2).   However,  if
+       passed a third argument, it uses _s_t_a_t(2), instead.
+
+       In  all cases, it clears the ssttaattddaattaa array.  When the call is success-
+       ful, ssttaatt(()) fills the ssttaattddaattaa array with  information  retrieved  from
+       the filesystem, as follows:
+
+       ssttaattddaattaa[[""nnaammee""]]
+              The name of the file.
+
+       ssttaattddaattaa[[""ddeevv""]]
+              Corresponds to the _s_t___d_e_v field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""iinnoo""]]
+              Corresponds to the _s_t___i_n_o field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""mmooddee""]]
+              Corresponds to the _s_t___m_o_d_e field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""nnlliinnkk""]]
+              Corresponds to the _s_t___n_l_i_n_k field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""uuiidd""]]
+              Corresponds to the _s_t___u_i_d field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""ggiidd""]]
+              Corresponds to the _s_t___g_i_d field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""ssiizzee""]]
+              Corresponds to the _s_t___s_i_z_e field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""aattiimmee""]]
+              Corresponds to the _s_t___a_t_i_m_e field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""mmttiimmee""]]
+              Corresponds to the _s_t___m_t_i_m_e field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""ccttiimmee""]]
+              Corresponds to the _s_t___c_t_i_m_e field in the _s_t_r_u_c_t _s_t_a_t.
+
+       ssttaattddaattaa[[""rrddeevv""]]
+              Corresponds  to the _s_t___r_d_e_v field in the _s_t_r_u_c_t _s_t_a_t.  This ele-
+              ment is only present for device files.
+
+       ssttaattddaattaa[[""mmaajjoorr""]]
+              Corresponds to the _s_t___m_a_j_o_r field in the _s_t_r_u_c_t _s_t_a_t.  This ele-
+              ment is only present for device files.
+
+       ssttaattddaattaa[[""mmiinnoorr""]]
+              Corresponds to the _s_t___m_i_n_o_r field in the _s_t_r_u_c_t _s_t_a_t.  This ele-
+              ment is only present for device files.
+
+       ssttaattddaattaa[[""bbllkkssiizzee""]]
+              Corresponds to the _s_t___b_l_k_s_i_z_e field in the _s_t_r_u_c_t _s_t_a_t, if  this
+              field  is  present on your system.  (It is present on all modern
+              systems that we know of.)
+
+       ssttaattddaattaa[[""ppmmooddee""]]
+              A human-readable version of the mode value, such as  printed  by
+              _l_s(1).  For example, ""--rrwwxxrr--xxrr--xx"".
+
+       ssttaattddaattaa[[""lliinnkkvvaall""]]
+              If  the  named  file is a symbolic link, this element will exist
+              and its value is the value of the symbolic link (where the  sym-
+              bolic link points to).
+
+       ssttaattddaattaa[[""ttyyppee""]]
+              The  type  of  the  file as a string. One of ""ffiillee"", ""bblloocckkddeevv"",
+              ""cchhaarrddeevv"", ""ddiirreeccttoorryy"", ""ssoocckkeett"", ""ffiiffoo"", ""ssyymmlliinnkk"", ""ddoooorr"",  or
+              ""uunnkknnoowwnn"".  Not all systems support all file types.
+
+   ffttss(())
+       The  ffttss(())  function  provides a hook to the _f_t_s(3) set of routines for
+       traversing file hierarchies.  Instead of returning data about one  file
+       at  a time in a stream, it fills in a multi-dimensional array with data
+       about each file and directory encountered in the requested hierarchies.
+
+       The arguments are as follows:
+
+       ppaatthhlliisstt
+              An array of filenames.  The element values are used;  the  index
+              values are ignored.
+
+       ffllaaggss  This  should  be  the bitwise OR of one or more of the following
+              predefined  flag  values.   At  least  one  of  FFTTSS__LLOOGGIICCAALL   or
+              FFTTSS__PPHHYYSSIICCAALL  must be provided; otherwise ffttss(()) returns an error
+              value and sets EERRRRNNOO.
+
+              FFTTSS__LLOOGGIICCAALL
+                     Do a ``logical'' file traversal,  where  the  information
+                     returned  for  a  symbolic  link  refers to the linked-to
+                     file, and not to the symbolic link itself.  This flag  is
+                     mutually exclusive with FFTTSS__PPHHYYSSIICCAALL.
+
+              FFTTSS__PPHHYYSSIICCAALL
+                     Do  a  ``physical'' file traversal, where the information
+                     returned for a symbolic link refers to the symbolic  link
+                     itself.   This  flag is mutually exclusive with FFTTSS__LLOOGGII--
+                     CCAALL.
+
+              FFTTSS__NNOOCCHHDDIIRR
+                     As a performance optimization, the _f_t_s(3) routines change
+                     directory  as  they traverse a file hierarchy.  This flag
+                     disables that optimization.
+
+              FFTTSS__CCOOMMFFOOLLLLOOWW
+                     Immediately follow a symbolic  link  named  in  ppaatthhlliisstt,
+                     whether or not FFTTSS__LLOOGGIICCAALL is set.
+
+              FFTTSS__SSEEEEDDOOTT
+                     By default, the _f_t_s(3) routines do not return entries for
+                     ``.'' and ``..''.  This option causes entries for  ``..''
+                     to  also be included.  (The AWK extension always includes
+                     an entry for ``.'', see below.)
+
+              FFTTSS__XXDDEEVV
+                     During a traversal, do not cross onto a different mounted
+                     filesystem.
+
+              FFTTSS__SSKKIIPP
+                     When  set,  causes  top  level  directories to not be de-
+                     scended into.
+
+       ffiilleeddaattaa
+              The ffiilleeddaattaa array is first cleared.  Then, ffttss(()) creates an el-
+              ement  in  ffiilleeddaattaa for every element in ppaatthhlliisstt.  The index is
+              the name of the directory or file given in ppaatthhlliisstt.   The  ele-
+              ment for this index is itself an array.  There are two cases.
+
+              The path is a file.
+                     In this case, the array contains two or three elements:
+
+                     ""ppaatthh"" The  full  path  to  this  file, starting from the
+                            ``root'' that was given in the ppaatthhlliisstt array.
+
+                     ""ssttaatt"" This element is itself an  array,  containing  the
+                            same  information  as provided by the ssttaatt(()) func-
+                            tion described earlier for its ssttaattddaattaa  argument.
+                            The  element may not be present if _s_t_a_t(2) for the
+                            file failed.
+
+                     ""eerrrroorr""
+                            If some kind of error was encountered,  the  array
+                            will  also contain an element named ""eerrrroorr"", which
+                            is a string describing the error.
+
+              The path is a directory.
+                     In this case, the array contains one element for each en-
+                     try  in  the directory.  If an entry is a file, that ele-
+                     ment is as for files, just described.  If the entry is  a
+                     directory,  that  element  is (recursively), an array de-
+                     scribing the subdirectory.  If FFTTSS__SSEEEEDDOOTT was provided in
+                     the flags, then there will also be an element named ""...."".
+                     This element will be an array containing the data as pro-
+                     vided by ssttaatt(()).
+
+                     In addition, there will be an element whose index is "".."".
+                     This element is an array containing the same two or three
+                     elements as for a file: ""ppaatthh"", ""ssttaatt"", and ""eerrrroorr"".
+
+       The  ffttss(()) function returns 0 if there were no errors. Otherwise it re-
+       turns -1.
+
+NNOOTTEESS
+       The AWK ffttss(()) extension does not exactly mimic  the  interface  of  the
+       _f_t_s(3) routines, choosing instead to provide an interface that is based
+       on associative arrays, which should be more comfortable to use from  an
+       AWK  program.   This  includes the lack of a comparison function, since
+       _g_a_w_k already provides powerful  array  sorting  facilities.   While  an
+       _f_t_s___r_e_a_d_(_)-like interface could have been provided, this felt less nat-
+       ural than simply creating a multi-dimensional array  to  represent  the
+       file hierarchy and its information.
+
+       Nothing  prevents  AWK code from changing the predefined FFTTSS___x_x values,
+       but doing so may cause strange results  when  the  changed  values  are
+       passed to ffttss(()).
+
+BBUUGGSS
+       There  are  many  more  file-related functions for which AWK interfaces
+       would be desirable.
+
+       It's not clear why I thought adding FFTTSS__SSKKIIPP was a good idea.
+
+EEXXAAMMPPLLEE
+       See tteesstt//ffttss..aawwkk in the _g_a_w_k distribution for an example.
+
+SSEEEE AALLSSOO
+       _G_A_W_K_: _E_f_f_e_c_t_i_v_e _A_W_K _P_r_o_g_r_a_m_m_i_n_g, _f_n_m_a_t_c_h(3am), _f_o_r_k(3am), _i_n_p_l_a_c_e(3am),
+       _o_r_d_c_h_r(3am), _r_e_a_d_d_i_r(3am), _r_e_a_d_f_i_l_e(3am), _r_e_v_o_u_t_p_u_t(3am), _r_w_a_r_r_a_y(3am),
+       _t_i_m_e(3am).
+
+       _c_h_d_i_r(2), _f_t_s(3), _s_t_a_t(2).
+
+AAUUTTHHOORR
+       Arnold Robbins, aarrnnoolldd@@sskkeeeevvee..ccoomm.
+
+CCOOPPYYIINNGG PPEERRMMIISSSSIIOONNSS
+       Copyright (C) 2012, 2013, 2018, Free Software Foundation, Inc.
+
+       Permission is granted to make and distribute verbatim  copies  of  this
+       manual  page  provided  the copyright notice and this permission notice
+       are preserved on all copies.
+
+       Permission is granted to copy and distribute modified versions of  this
+       manual  page  under  the conditions for verbatim copying, provided that
+       the entire resulting derived work is distributed under the terms  of  a
+       permission notice identical to this one.
+
+       Permission  is granted to copy and distribute translations of this man-
+       ual page into another language, under the above conditions for modified
+       versions,  except that this permission notice may be stated in a trans-
+       lation approved by the Foundation.
+
+
+
+Free Software Foundation          Feb 21 2018                   FILEFUNCS(3am)

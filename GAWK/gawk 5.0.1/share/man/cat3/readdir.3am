@@ -1,0 +1,64 @@
+READDIR(3am)               GNU Awk Extension Modules              READDIR(3am)
+
+
+
+NNAAMMEE
+       readdir - directory input parser for gawk
+
+SSYYNNOOPPSSIISS
+       @load "readdir"
+
+DDEESSCCRRIIPPTTIIOONN
+       The _r_e_a_d_d_i_r extension adds an input parser for directories.
+
+       When this extension is in use, instead of skipping directories named on
+       the command line (or with ggeettlliinnee), they are read, with each entry  re-
+       turned as a record.
+
+       The record consists of three fields. The first two are the inode number
+       and the filename, separated by a forward slash character.   On  systems
+       where  the  directory  entry  contains  the file type, the record has a
+       third field which is a single letter indicating the type of the file: ff
+       for  file, dd for directory, bb for a block device, cc for a character de-
+       vice, pp for a FIFO, ll for a symbolic link, ss for a socket.
+
+       On systems without the file type information, the extension falls  back
+       to  calling  _s_t_a_t(2),  in  order  to provide the information.  Thus the
+       third field should never be uu.
+
+EEXXAAMMPPLLEE
+       @load "readdir"
+       ...
+       BEGIN { FS = "/" }
+       { print "file name is", $2 }
+
+SSEEEE AALLSSOO
+       _G_A_W_K_:  _E_f_f_e_c_t_i_v_e   _A_W_K   _P_r_o_g_r_a_m_m_i_n_g,   _f_i_l_e_f_u_n_c_s(3am),   _f_n_m_a_t_c_h(3am),
+       _f_o_r_k(3am),  _i_n_p_l_a_c_e(3am),  _o_r_d_c_h_r(3am),  _r_e_a_d_f_i_l_e(3am), _r_e_v_o_u_t_p_u_t(3am),
+       _r_w_a_r_r_a_y(3am), _t_i_m_e(3am).
+
+       _o_p_e_n_d_i_r(3), _r_e_a_d_d_i_r(3), _s_t_a_t(2).
+
+AAUUTTHHOORR
+       Arnold Robbins, aarrnnoolldd@@sskkeeeevvee..ccoomm.
+
+CCOOPPYYIINNGG PPEERRMMIISSSSIIOONNSS
+       Copyright (C) 2012, 2013, 2018, 2019 Free Software Foundation, Inc.
+
+       Permission is granted to make and distribute verbatim  copies  of  this
+       manual  page  provided  the copyright notice and this permission notice
+       are preserved on all copies.
+
+       Permission is granted to copy and distribute modified versions of  this
+       manual  page  under  the conditions for verbatim copying, provided that
+       the entire resulting derived work is distributed under the terms  of  a
+       permission notice identical to this one.
+
+       Permission  is granted to copy and distribute translations of this man-
+       ual page into another language, under the above conditions for modified
+       versions,  except that this permission notice may be stated in a trans-
+       lation approved by the Foundation.
+
+
+
+Free Software Foundation          Mar 17 2019                     READDIR(3am)
